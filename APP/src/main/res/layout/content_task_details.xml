@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:id="@+id/rlparentView"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.dailytodo.taskdetails.TaskDetailsActivity"
+    tools:showIn="@layout/activity_task_details">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_toLeftOf="@+id/tvTaskTitle"
+        android:scaleType="fitCenter"
+        app:srcCompat="@mipmap/ic_launcher_foreground" />
+
+    <TextView
+        android:id="@+id/tvTaskTitle"
+        style="@style/TextViewStyle.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/icon"
+        android:layout_alignTop="@+id/icon"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/app_name" />
+
+
+    <TextView
+        android:id="@+id/desc"
+        style="@style/TextViewStyle.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTaskTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="hjdhkjdha sjdhadhg" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/desc"
+        android:id="@+id/rvComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
