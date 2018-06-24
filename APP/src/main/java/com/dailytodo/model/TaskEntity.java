@@ -14,7 +14,31 @@ public class TaskEntity implements Parcelable {
     String desc;
     boolean status;
     long timeInMilliSec;
+    String date, time;
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public TaskEntity(String userId, String taskId, String name, String desc, boolean status, long timeInMilliSec) {
         this.userId = userId;
@@ -29,14 +53,6 @@ public class TaskEntity implements Parcelable {
 
         this.status = false;
 
-    }
-
-    public String getUserID() {
-        return userId;
-    }
-
-    public void setUserID(String userID) {
-        this.userId = userID;
     }
 
     public String getTaskId() {
@@ -79,7 +95,6 @@ public class TaskEntity implements Parcelable {
         this.timeInMilliSec = timeInMilliSec;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -93,6 +108,8 @@ public class TaskEntity implements Parcelable {
         dest.writeString(this.desc);
         dest.writeByte(this.status ? (byte) 1 : (byte) 0);
         dest.writeLong(this.timeInMilliSec);
+        dest.writeString(this.date);
+        dest.writeString(this.time);
     }
 
     protected TaskEntity(Parcel in) {
@@ -102,6 +119,8 @@ public class TaskEntity implements Parcelable {
         this.desc = in.readString();
         this.status = in.readByte() != 0;
         this.timeInMilliSec = in.readLong();
+        this.date = in.readString();
+        this.time = in.readString();
     }
 
     public static final Parcelable.Creator<TaskEntity> CREATOR = new Parcelable.Creator<TaskEntity>() {

@@ -1,6 +1,12 @@
 package com.dailytodo.taskdetails;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,14 +21,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.dailytodo.R;
+import com.dailytodo.Utility.AlarmReceiverActivity;
 import com.dailytodo.Utility.BaseActivity;
 import com.dailytodo.Utility.Constants;
+import com.dailytodo.Utility.DateTimePicker;
 import com.dailytodo.dashboard.CompletedTaskAdapter;
 import com.dailytodo.dashboard.DashboardFragment;
 import com.dailytodo.dashboard.PendingTaskAdapter;
@@ -35,7 +46,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class TaskDetailsActivity extends BaseActivity {
@@ -48,6 +61,9 @@ public class TaskDetailsActivity extends BaseActivity {
     RecyclerView rvComments;
     CommentsAdapter commentsAdapter;
     List<CommentsEntity> commentsEntities;
+    EditText etDate, etTime, etDetails;
+    SimpleDateFormat displayFormat = new SimpleDateFormat("dd-MM-yyyy");
+    Calendar dateCAlender, timeCalender, overAllCalender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +114,20 @@ public class TaskDetailsActivity extends BaseActivity {
     private void init_Widgets() {
         tvTaskTitle = (TextView) findViewById(R.id.tvTaskTitle);
         tvTaskTitle.setText("" + taskEntity.getName());
-        desc = (TextView) findViewById(R.id.desc);
-        desc.setText("" + taskEntity.getDesc());
         rlparentView = (RelativeLayout) findViewById(R.id.rlparentView);
         rvComments = (RecyclerView) findViewById(R.id.rvComments);
         rvComments.setLayoutManager(new LinearLayoutManager(this));
         commentsEntities = new ArrayList<>();
+        etDate = (EditText) findViewById(R.id.etDate);
+        etDetails = (EditText) findViewById(R.id.etDetails);
+        etDetails.setText("" + taskEntity.getDesc());
+        etTime = (EditText) findViewById(R.id.etTime);
+        if (taskEntity.getTime() != null)
+            etTime.setText("" + taskEntity.getTime());
+        if (taskEntity.getDate() != null)
+            etDate.setText("" + taskEntity.getDate());
+        etDate.setOnClickListener(datePickerDialog);
+        etTime.setOnClickListener(timePickerDialog);
     }
 
     private void showPopUp() {
@@ -154,5 +178,80 @@ public class TaskDetailsActivity extends BaseActivity {
         String id = dbComments.push().getKey();
         CommentsEntity commentsEntity = new CommentsEntity(taskEntity.getTaskId(), id, comment);
         dbComments.child(id).setValue(commentsEntity);
+    }
+
+
+    protected View.OnClickListener datePickerDialog = new View.OnClickListener() {
+        @Override
+        public void onClick(final View view) {
+            hideKeyBoard(view, TaskDetailsActivity.this);
+
+            //region policy etDate
+            if (view.getId() == R.id.etDate) {
+                DateTimePicker.showDataPickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view1, int year, int monthOfYear, int dayOfMonth) {
+                        if (view1.isShown()) {
+
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.set(year, monthOfYear, dayOfMonth);
+                            String currentDay = displayFormat.format(calendar.getTime());
+                            etDate.setText(currentDay);
+                            taskEntity.setDate(etDate.getText().toString());
+                            updateTask(taskEntity);
+                        }
+                    }
+                });
+            }
+            //endregion
+
+        }
+    };
+    protected View.OnClickListener timePickerDialog = new View.OnClickListener() {
+        @Override
+        public void onClick(final View view) {
+            hideKeyBoard(view, TaskDetailsActivity.this);
+
+            //region policy etDate
+            if (view.getId() == R.id.etTime) {
+                DateTimePicker.showTimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), i, i1);
+                        etTime.setText(i + ":" + i1);
+                        taskEntity.setTime(etTime.getText().toString());
+                        updateTask(taskEntity);
+                        long diff = calendar.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+                        Toast.makeText(TaskDetailsActivity.this, "" + diff + "Secs", Toast.LENGTH_SHORT).show();
+                        setAlarm(calendar);
+                    }
+                });
+            }
+            //endregion
+
+        }
+    };
+
+    private void setAlarm(Calendar calendar) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, 5);
+
+        //Create a new PendingIntent and add it to the AlarmManager
+        Intent intent = new Intent(this, AlarmReceiverActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager am =
+                (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                pendingIntent);
+    }
+
+    public boolean updateTask(TaskEntity taskEntity) {
+
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(Constants.TASK_DB).child(taskEntity.getTaskId());
+        dR.setValue(taskEntity);
+        return true;
     }
 }

@@ -2,6 +2,7 @@ package com.dailytodo.dashboard;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -76,7 +77,12 @@ public class PendingTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     return false;
                 }
             });
-
+            ((DashboardItemHolder) holder).ivNotification.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((DashboardFragment) mContext).startActivityForResult(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS), 1000);
+                }
+            });
         }
     }
 

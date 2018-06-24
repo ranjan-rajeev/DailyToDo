@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/white"
-    android:layout_width="match_parent"
     android:id="@+id/rlparentView"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.dailytodo.taskdetails.TaskDetailsActivity"
     tools:showIn="@layout/activity_task_details">
@@ -31,22 +31,57 @@
         android:text="@string/app_name" />
 
 
-    <TextView
-        android:id="@+id/desc"
-        style="@style/TextViewStyle.Small"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/etDetails"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTaskTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="hjdhkjdha sjdhadhg" />
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/ic_action_details"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:hint="Enter Details"
+        android:padding="5dp"
+        android:textColorHint="@color/text_color_light" />
+
+    <EditText
+        android:id="@+id/etDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDetails"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/ic_action_date"
+        android:drawablePadding="10dp"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:hint="Select Date"
+        android:padding="5dp"
+        android:textColorHint="@color/text_color_light" />
+
+    <EditText
+        android:id="@+id/etTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDate"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/ic_action_time"
+        android:drawablePadding="10dp"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:hint="Select Time"
+        android:padding="5dp"
+        android:textColorHint="@color/text_color_light" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/desc"
         android:id="@+id/rvComments"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etTime"
+        android:layout_marginTop="8dp"
+        android:visibility="visible">
 
     </android.support.v7.widget.RecyclerView>
 

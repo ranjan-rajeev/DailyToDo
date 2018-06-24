@@ -89,7 +89,7 @@ public class DashboardFragment extends BaseFragment {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     //getting artist
                     TaskEntity taskEntity = postSnapshot.getValue(TaskEntity.class);
-                    if (taskEntity.getUserID().equals(userEntity.getUserId())) {
+                    if (taskEntity.getUserId().equals(userEntity.getUserId())) {
                         if (taskEntity.isStatus()) {
                             completedTAsk.add(taskEntity);
                         } else {
