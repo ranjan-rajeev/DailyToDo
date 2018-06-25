@@ -217,7 +217,7 @@ public class TaskDetailsActivity extends BaseActivity {
                         updateTask(taskEntity);
                         long diff = calendar.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
                         //Toast.makeText(TaskDetailsActivity.this, "" + diff + "Secs", Toast.LENGTH_SHORT).show();
-                        setAlarm(diff);
+                        setAlarm(calendar);
                     }
                 });
             }
@@ -228,17 +228,21 @@ public class TaskDetailsActivity extends BaseActivity {
 
     private void setAlarm(Calendar calendar) {
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 5);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        //Create a new PendingIntent and add it to the AlarmManager
-        Intent intent = new Intent(this, MyAlarm.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager am =
-                (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                pendingIntent);
+        //creating a new intent specifying the broadcast receiver
+        Intent i = new Intent(this, MyAlarm.class);
+        i.putExtra("TITLE", taskEntity.getName());
+        //creating a pending intent using the intent
+        PendingIntent pi = PendingIntent.getBroadcast(this, 1000, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //setting the repeating alarm that will be fired every day
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            am.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pi);
+        } else {
+            am.set(AlarmManager.RTC, calendar.getTimeInMillis(), pi);
+        }
+        Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show();
     }
 
     private void setAlarm(long time) {
