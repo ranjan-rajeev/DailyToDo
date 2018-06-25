@@ -10,11 +10,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,16 +27,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.dailytodo.R;
-import com.dailytodo.Utility.AlarmReceiverActivity;
 import com.dailytodo.Utility.BaseActivity;
 import com.dailytodo.Utility.Constants;
 import com.dailytodo.Utility.DateTimePicker;
-import com.dailytodo.dashboard.CompletedTaskAdapter;
-import com.dailytodo.dashboard.DashboardFragment;
-import com.dailytodo.dashboard.PendingTaskAdapter;
+import com.dailytodo.Utility.MyAlarm;
 import com.dailytodo.model.CommentsEntity;
 import com.dailytodo.model.TaskEntity;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -223,8 +216,8 @@ public class TaskDetailsActivity extends BaseActivity {
                         taskEntity.setTime(etTime.getText().toString());
                         updateTask(taskEntity);
                         long diff = calendar.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-                        Toast.makeText(TaskDetailsActivity.this, "" + diff + "Secs", Toast.LENGTH_SHORT).show();
-                        setAlarm(calendar);
+                        //Toast.makeText(TaskDetailsActivity.this, "" + diff + "Secs", Toast.LENGTH_SHORT).show();
+                        setAlarm(diff);
                     }
                 });
             }
@@ -239,7 +232,7 @@ public class TaskDetailsActivity extends BaseActivity {
         cal.add(Calendar.SECOND, 5);
 
         //Create a new PendingIntent and add it to the AlarmManager
-        Intent intent = new Intent(this, AlarmReceiverActivity.class);
+        Intent intent = new Intent(this, MyAlarm.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager am =
@@ -248,10 +241,29 @@ public class TaskDetailsActivity extends BaseActivity {
                 pendingIntent);
     }
 
+    private void setAlarm(long time) {
+        //getting the alarm manager
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        //creating a new intent specifying the broadcast receiver
+        Intent i = new Intent(this, MyAlarm.class);
+        i.putExtra("TITLE", taskEntity.getName());
+        //creating a pending intent using the intent
+        PendingIntent pi = PendingIntent.getBroadcast(this, 1000, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //setting the repeating alarm that will be fired every day
+        am.setRepeating(AlarmManager.RTC, time, AlarmManager.INTERVAL_DAY, pi);
+        Toast.makeText(this, "Alarm is set for - " + time + "MilliSEc", Toast.LENGTH_SHORT).show();
+    }
+
     public boolean updateTask(TaskEntity taskEntity) {
 
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference(Constants.TASK_DB).child(taskEntity.getTaskId());
         dR.setValue(taskEntity);
         return true;
+    }
+
+    public TaskEntity getTAskEntity() {
+        return this.taskEntity;
     }
 }
