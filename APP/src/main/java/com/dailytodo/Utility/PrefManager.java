@@ -14,6 +14,7 @@ public class PrefManager {
 
     // shared pref mode
     int PRIVATE_MODE = 0;
+    int new_feature = 0;
 
     // Shared preferences file name
     private static final String PREF_NAME = "dailytodo";
