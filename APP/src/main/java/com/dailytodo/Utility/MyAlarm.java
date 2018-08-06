@@ -28,7 +28,7 @@ public class MyAlarm extends BroadcastReceiver {
     private NotificationManager mManager;
 
     //the method will be fired when the alarm is triggerred
-    Context context;
+    Context context,kjghdj;
 
     @Override
     public void onReceive(Context context, Intent intent) {
