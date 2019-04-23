@@ -18,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class TaskDetailsActivity extends BaseActivity {
+public class TaskDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     RelativeLayout rlparentView;
     TaskEntity taskEntity;
@@ -57,6 +59,8 @@ public class TaskDetailsActivity extends BaseActivity {
     EditText etDate, etTime, etDetails;
     SimpleDateFormat displayFormat = new SimpleDateFormat("dd-MM-yyyy");
     Calendar dateCAlender, timeCalender, overAllCalender;
+    Button fab;
+    ImageView ivSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +75,8 @@ public class TaskDetailsActivity extends BaseActivity {
         }
         init_Widgets();
         dbComments = FirebaseDatabase.getInstance().getReference(Constants.COMMENTS_DB);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopUp();
-            }
-        });
+        fab.setOnClickListener(this);
+        ivSave.setOnClickListener(this);
 
         //region comments listener
         dbComments.addValueEventListener(new ValueEventListener() {
@@ -97,7 +96,6 @@ public class TaskDetailsActivity extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
@@ -105,6 +103,8 @@ public class TaskDetailsActivity extends BaseActivity {
     }
 
     private void init_Widgets() {
+        ivSave = findViewById(R.id.ivSave);
+        fab = findViewById(R.id.fab);
         tvTaskTitle = (TextView) findViewById(R.id.tvTaskTitle);
         tvTaskTitle.setText("" + taskEntity.getName());
         rlparentView = (RelativeLayout) findViewById(R.id.rlparentView);
@@ -267,7 +267,29 @@ public class TaskDetailsActivity extends BaseActivity {
         return true;
     }
 
+    public boolean deleteTask() {
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(Constants.TASK_DB).child(taskEntity.getTaskId());
+        dR.removeValue();
+        return true;
+    }
+
     public TaskEntity getTAskEntity() {
         return this.taskEntity;
     }
+
+    @Override
+    public void onClick(View v) {
+        hideKeyBoard(ivSave, TaskDetailsActivity.this);
+        switch (v.getId()) {
+            case R.id.fab:
+                showPopUp();
+                break;
+            case R.id.ivSave:
+                taskEntity.setDesc(etDetails.getText().toString());
+                updateTask(taskEntity);
+                Toast.makeText(this, "Task updated successfully!!!", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
 }

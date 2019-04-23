@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://E:\AndroidStudioProjects\DailyToDo\AndroidStudioProjects.iml" filepath="E:\AndroidStudioProjects\DailyToDo\AndroidStudioProjects.iml" />
+      <module fileurl="file://E:/AndroidStudioProjects/DailyToDo/AndroidStudioProjects.iml" filepath="E:/AndroidStudioProjects/DailyToDo/AndroidStudioProjects.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/DailyToDo.iml" filepath="$PROJECT_DIR$/.idea/DailyToDo.iml" />
+      <module fileurl="file://E:/AndroidStudioProjects/DailyToDo/.idea/DailyToDo.iml" filepath="E:/AndroidStudioProjects/DailyToDo/.idea/DailyToDo.iml" />
       <module fileurl="file://$PROJECT_DIR$/DailyToDo.iml" filepath="$PROJECT_DIR$/DailyToDo.iml" />
-      <module fileurl="file://E:\AndroidStudioProjects\DailyToDo\.idea\DailyToDo.iml" filepath="E:\AndroidStudioProjects\DailyToDo\.idea\DailyToDo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/APP/app.iml" filepath="$PROJECT_DIR$/APP/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/APP/app.iml" filepath="$PROJECT_DIR$/APP/app.iml" />
     </modules>
   </component>

@@ -24,17 +24,22 @@
 
     <include layout="@layout/content_task_details" />
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:background="@drawable/circular_background_green"
+        android:drawableLeft="@android:drawable/ic_input_add"
+        android:drawableTint="@android:color/white"
         android:elevation="0dp"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Add Comments"
+        android:drawablePadding="5dp"
+        android:textColor="@android:color/white" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +15,9 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +56,9 @@ public class DashboardFragment extends BaseFragment {
     RelativeLayout rlparentView;
     DatabaseReference dbTAsk;
     ValueEventListener addValueEventListener;
+    Button fab;
+    TextView tvNoTask;
+    LinearLayout llDetails;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -67,7 +71,7 @@ public class DashboardFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         initialise(view);
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,10 +104,20 @@ public class DashboardFragment extends BaseFragment {
 
                 }
 
-                pendingTaskAdapter = new PendingTaskAdapter(DashboardFragment.this, pendingTask);
-                rvPending.setAdapter(pendingTaskAdapter);
-                completedTaskAdapter = new CompletedTaskAdapter(DashboardFragment.this, completedTAsk);
-                rvCompleted.setAdapter(completedTaskAdapter);
+                if ((pendingTask != null && pendingTask.size() > 0) || (completedTAsk != null && completedTAsk.size() > 0)) {
+                    tvNoTask.setVisibility(View.GONE);
+                    llDetails.setVisibility(View.VISIBLE);
+
+                    pendingTaskAdapter = new PendingTaskAdapter(DashboardFragment.this, pendingTask);
+                    rvPending.setAdapter(pendingTaskAdapter);
+                    completedTaskAdapter = new CompletedTaskAdapter(DashboardFragment.this, completedTAsk);
+                    rvCompleted.setAdapter(completedTaskAdapter);
+
+                } else {
+                    tvNoTask.setVisibility(View.VISIBLE);
+                    llDetails.setVisibility(View.GONE);
+                }
+
 
             }
 
@@ -165,6 +179,9 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void initialise(View view) {
+        fab = view.findViewById(R.id.fab);
+        tvNoTask = view.findViewById(R.id.tvNoTask);
+        llDetails = view.findViewById(R.id.llDetails);
         rlparentView = (RelativeLayout) view.findViewById(R.id.rlparentView);
         rvCompleted = (RecyclerView) view.findViewById(R.id.rvCompleted);
         rvCompleted.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -175,6 +192,12 @@ public class DashboardFragment extends BaseFragment {
     public boolean updateTask(String id, TaskEntity taskEntity) {
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference(Constants.TASK_DB).child(id);
         dR.setValue(taskEntity);
+        return true;
+    }
+
+    public boolean deleteTask(String id, TaskEntity taskEntity) {
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(Constants.TASK_DB).child(id);
+        dR.removeValue();
         return true;
     }
 

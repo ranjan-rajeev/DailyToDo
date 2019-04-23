@@ -12,7 +12,7 @@ public class UserEntity {
     String email;
     String mobile;
     String tokenId;
-
+    String pin;
 
     public String getUserId() {
         return userId;
@@ -22,13 +22,14 @@ public class UserEntity {
 
     }
 
-    public UserEntity(String userId, String name, String email, String mobile, String tokenId) {
+    public UserEntity(String userId, String name, String email, String mobile, String tokenId, String pin) {
         this.userId = userId;
         this.name = name;
         this.email = email;
 
         this.mobile = mobile;
         this.tokenId = tokenId;
+        this.pin = pin;
     }
 
     public void setUserId(String userId) {
@@ -67,5 +68,11 @@ public class UserEntity {
         this.tokenId = tokenId;
     }
 
+    public String getPin() {
+        return pin;
+    }
 
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
 }

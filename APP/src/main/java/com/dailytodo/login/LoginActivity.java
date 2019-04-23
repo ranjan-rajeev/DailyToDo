@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     Button btnLogin;
-    EditText etMobile;
+    EditText etMobile, etPin;
     DatabaseReference dbUser;
     PrefManager prefManager;
 
@@ -40,6 +40,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         dbUser = FirebaseDatabase.getInstance().getReference(Constants.USER_DB);
 
         etMobile = (EditText) findViewById(R.id.etMobile);
+        etPin = findViewById(R.id.etPin);
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
     }
@@ -47,13 +48,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnLogin) {
-            String mobileNo = etMobile.getText().toString().trim();
-            if (!mobileNo.equals("")) {
-                AddUserIfNotExhist(mobileNo);
-            } else {
-                Toast.makeText(this, "Please enter  Mobile", Toast.LENGTH_LONG).show();
+            if (validateInput()) {
+                String mobileNo = etMobile.getText().toString().trim();
+                String pin = etPin.getText().toString().trim();
+                AddUserIfNotExhist(mobileNo, pin);
+            }
+
+        }
+    }
+
+    private boolean validateInput() {
+        if (etMobile.getText().toString().equals("")) {
+            etMobile.requestFocus();
+            etMobile.setError("Enter mobile number");
+            return false;
+        } else {
+            if (etMobile.getText().toString().length() != 10) {
+                etMobile.requestFocus();
+                etMobile.setError("Enter valid mobile number");
+                return false;
             }
         }
+
+        if (etPin.getText().toString().equals("")) {
+            etPin.requestFocus();
+            etPin.setError("Enter PIN");
+            return false;
+        } else {
+            if (etPin.getText().toString().length() != 4) {
+                etPin.requestFocus();
+                etPin.setError("Enter valid PIN");
+                return false;
+            }
+        }
+        return true;
     }
 
     /*private void AddUserIfNotExhist() {
@@ -84,7 +112,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     }*/
 
-    public void AddUserIfNotExhist(final String mobileNo) {
+    public void AddUserIfNotExhist(final String mobileNo, final String pin) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(Constants.USER_DB).orderByChild("mobile").equalTo(mobileNo);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -94,14 +122,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     // dataSnapshot is the "issue" node with all children with id 0
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         UserEntity userEntity = dataSnapshot1.getValue(UserEntity.class);
-                        prefManager.storeUser(userEntity);
-                        Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                        break;
+
+                        if (pin.equals(userEntity.getPin())) {
+                            prefManager.storeUser(userEntity);
+                            Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            break;
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_LONG).show();
+                            break;
+                        }
+
                     }
                 } else {
                     String id = dbUser.push().getKey();
-                    UserEntity userEntity = new UserEntity(id, "", "", mobileNo, "");
+                    UserEntity userEntity = new UserEntity(id, "", "", mobileNo, "", pin);
                     dbUser.child(id).setValue(userEntity);
                     prefManager.storeUser(userEntity);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));

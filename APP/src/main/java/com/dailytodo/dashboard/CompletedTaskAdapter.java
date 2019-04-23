@@ -27,13 +27,14 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class DashboardItemHolder extends RecyclerView.ViewHolder {
-        ImageView ivTick;
+        ImageView ivTick, ivDelete;
         TextView tvTitle;
 
         public DashboardItemHolder(View view) {
             super(view);
             ivTick = (ImageView) view.findViewById(R.id.ivTick);
             tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            ivDelete = view.findViewById(R.id.ivDelete);
         }
     }
 
@@ -59,6 +60,14 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     taskEntity.setStatus(false);
                     ((DashboardFragment) mContext).updateTask(taskEntity.getTaskId(), taskEntity);
+                    return false;
+                }
+            });
+            ((DashboardItemHolder) holder).ivDelete.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    taskEntity.setStatus(false);
+                    ((DashboardFragment) mContext).deleteTask(taskEntity.getTaskId(), taskEntity);
                     return false;
                 }
             });
