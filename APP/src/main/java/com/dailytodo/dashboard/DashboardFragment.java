@@ -29,6 +29,7 @@ import com.dailytodo.Utility.PrefManager;
 import com.dailytodo.model.TaskEntity;
 import com.dailytodo.model.UserEntity;
 import com.dailytodo.taskdetails.TaskDetailsActivity;
+import com.dailytodo.widget.MyWidgetProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -176,6 +177,7 @@ public class DashboardFragment extends BaseFragment {
         String id = dbTAsk.push().getKey();
         TaskEntity taskEntity = new TaskEntity(userEntity.getUserId(), id, taskNAme, "", false, System.currentTimeMillis());
         dbTAsk.child(id).setValue(taskEntity);
+        MyWidgetProvider.sendRefreshBroadcast(this.getActivity());
     }
 
     private void initialise(View view) {
