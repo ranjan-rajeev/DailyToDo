@@ -3,7 +3,6 @@ package com.dailytodo.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Binder;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
@@ -18,12 +17,11 @@ import java.util.List;
 public class MyWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
-    private Cursor mCursor;
     List<TaskEntity> taskEntities;
 
     public MyWidgetRemoteViewsFactory(Context applicationContext, Intent intent) {
         mContext = applicationContext;
-        taskEntities = WidgetUtility.getUpcomingTasks(mContext);
+        taskEntities = RemoteFetchService.listItemList;
     }
 
     @Override
@@ -39,6 +37,11 @@ public class MyWidgetRemoteViewsFactory implements RemoteViewsService.RemoteView
         if (taskEntities != null) {
             //taskEntities.add(new TaskEntity("1", "1", "First Task", "", false, System.currentTimeMillis()));
             //taskEntities.add(new TaskEntity("2", "1", "Second Task", "", false, System.currentTimeMillis()));
+
+        } else {
+            taskEntities = new ArrayList<>();
+            taskEntities.add(new TaskEntity("1", "1", "First Task", "", false, System.currentTimeMillis()));
+            taskEntities.add(new TaskEntity("2", "1", "Second Task", "", false, System.currentTimeMillis()));
 
         }
 

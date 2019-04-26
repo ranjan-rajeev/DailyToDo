@@ -8,6 +8,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -17,21 +18,50 @@ import com.dailytodo.R;
 import com.dailytodo.home.HomeActivity;
 
 public class MyWidgetProvider extends AppWidgetProvider {
-
-    private static HandlerThread sWorkerThread;
-    private static Handler sWorkerQueue;
-    public static String UPDATE_WIDGET_LIST_ACTION = "widgetlistaction";
-    public static String EXTRA_DATA = "extradata";
+    public static String TAG = "WIDGET_LOG";
+    public static final String DATA_FETCHED = "DATA_FETCHED";
 
     public MyWidgetProvider() {
-        // Start the worker thread
-        sWorkerThread = new HandlerThread("MyWidgetProvider-worker");
-        sWorkerThread.start();
-        sWorkerQueue = new Handler(sWorkerThread.getLooper());
     }
 
 
     @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (intent.getAction().equals(DATA_FETCHED)) {
+            Log.d(MyWidgetProvider.TAG, "onReceive - with action DATA FETCHED");
+            int appWidgetId = intent.getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+            AppWidgetManager appWidgetManager = AppWidgetManager
+                    .getInstance(context);
+            RemoteViews remoteViews = updateWidgetListView(context, appWidgetId);
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        }
+    }
+
+    private RemoteViews updateWidgetListView(Context context, int appWidgetId) {
+
+        // which layout to show on widget
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                R.layout.widget_layout);
+
+        // RemoteViews Service needed to provide adapter for ListView
+        Intent svcIntent = new Intent(context, MyWidgetRemoteViewsService.class);
+        // passing app widget id to that RemoteViews Service
+        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        // setting a unique Uri to the intent
+        // don't know its purpose to me right now
+        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        // setting adapter to listview of the widget
+        remoteViews.setRemoteAdapter(appWidgetId, R.id.list,
+                svcIntent);
+        // setting an empty view in case of no data
+        //remoteViews.setEmptyView(R.id.listViewWidget, R.id.empty_view);
+        return remoteViews;
+    }
+
+    /*@Override
     public void onReceive(final Context context, Intent intent) {
         final String action = intent.getAction();
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
@@ -42,12 +72,24 @@ public class MyWidgetProvider extends AppWidgetProvider {
         }
         super.onReceive(context, intent);
     }
-
+*/
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
 
-        for (int appWidgetId : appWidgetIds) {
+        final int N = appWidgetIds.length;
+        for (int i = 0; i < N; i++) {
+            Intent serviceIntent = new Intent(context, RemoteFetchService.class);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    appWidgetIds[i]);
+            context.startService(serviceIntent);
+        }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+
+
+
+
+        /*for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(
                     context.getPackageName(),
                     R.layout.widget_layout
@@ -60,45 +102,7 @@ public class MyWidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.rlTitle, titlePendingIntent);
 
 
-
-            /*Intent titleIntent = new Intent(context, HomeActivity.class);
-            PendingIntent titlePendingIntent = PendingIntent.getActivity(context, 0, titleIntent, 0);
-            views.setOnClickPendingIntent(R.id.list, titlePendingIntent);
-
-            Intent intent = new Intent(context, MyWidgetRemoteViewsService.class);
-            views.setRemoteAdapter(R.id.app_name, intent);
-            appWidgetManager.updateAppWidget(appWidgetId, views);*/
-
-
             appWidgetManager.updateAppWidget(appWidgetId, views);
-        }
-
-
-        // Get all ids
-        /*ComponentName thisWidget = new ComponentName(context,
-                MyWidgetProvider.class);
-        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-        for (final int widgetId : allWidgetIds) {
-            // create some random data
-            int number = (new Random().nextInt(100));
-
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                    R.layout.widget_layout);
-            Log.w("WidgetExample", String.valueOf(number));
-            // Set the text
-            remoteViews.setTextViewText(R.id.tv_taskcount, String.valueOf(number));
-
-
-            // Register an onClickListener
-            Intent intent = new Intent(context, MyWidgetProvider.class);
-
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.tv_taskcount, pendingIntent);
-            appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }*/
     }
 
