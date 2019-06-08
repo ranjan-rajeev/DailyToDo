@@ -42,11 +42,24 @@
                 android:value="com.dailytodo.home.HomeActivity" />
         </activity>
         <activity
+            android:launchMode="singleTask"
             android:name=".home.HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver android:name=".Utility.MyAlarm" />
+
+        <receiver android:name=".widget.ToDoAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/to_do_app_widget_info" />
+        </receiver>
+        <service android:name=".widget.ListViewWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"></service>
     </application>
 
 </manifest>

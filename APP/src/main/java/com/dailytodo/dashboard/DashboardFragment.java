@@ -99,7 +99,8 @@ public class DashboardFragment extends BaseFragment {
                     }
 
                 }
-
+                Constants.pendTask = pendingTask;
+                Constants.sendRefreshBroadcast( DashboardFragment.this.getActivity());
                 pendingTaskAdapter = new PendingTaskAdapter(DashboardFragment.this, pendingTask);
                 rvPending.setAdapter(pendingTaskAdapter);
                 completedTaskAdapter = new CompletedTaskAdapter(DashboardFragment.this, completedTAsk);
