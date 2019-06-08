@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://E:\AndroidStudioProjects\DailyToDo\AndroidStudioProjects.iml" filepath="E:\AndroidStudioProjects\DailyToDo\AndroidStudioProjects.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidStudioProjects.iml" filepath="$PROJECT_DIR$/AndroidStudioProjects.iml" />
       <module fileurl="file://$PROJECT_DIR$/DailyToDo.iml" filepath="$PROJECT_DIR$/DailyToDo.iml" />
-      <module fileurl="file://D:\Rajeev\AndroidProjects\DailyToDo\DailyToDo.iml" filepath="D:\Rajeev\AndroidProjects\DailyToDo\DailyToDo.iml" />
-      <module fileurl="file://E:\AndroidStudioProjects\DailyToDo\.idea\DailyToDo.iml" filepath="E:\AndroidStudioProjects\DailyToDo\.idea\DailyToDo.iml" />
+      <module fileurl="file://D:/Rajeev/AndroidProjects/DailyToDo/DailyToDo.iml" filepath="D:/Rajeev/AndroidProjects/DailyToDo/DailyToDo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/DailyToDo.iml" filepath="$PROJECT_DIR$/.idea/DailyToDo.iml" />
       <module fileurl="file://$PROJECT_DIR$/APP/app.iml" filepath="$PROJECT_DIR$/APP/app.iml" />
-      <module fileurl="file://D:\Rajeev\AndroidProjects\DailyToDo\APP\app.iml" filepath="D:\Rajeev\AndroidProjects\DailyToDo\APP\app.iml" />
+      <module fileurl="file://D:/Rajeev/AndroidProjects/DailyToDo/APP/app.iml" filepath="D:/Rajeev/AndroidProjects/DailyToDo/APP/app.iml" />
     </modules>
   </component>
 </project>

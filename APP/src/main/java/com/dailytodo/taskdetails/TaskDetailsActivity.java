@@ -192,6 +192,7 @@ public class TaskDetailsActivity extends BaseActivity {
                             etDate.setText(currentDay);
                             taskEntity.setDate(etDate.getText().toString());
                             updateTask(taskEntity);
+                            broadCastDate(etDate.getText().toString());
                         }
                     }
                 });
@@ -200,6 +201,14 @@ public class TaskDetailsActivity extends BaseActivity {
 
         }
     };
+
+    private void broadCastDate(String s) {
+        Intent sendBroadcastIntent = new Intent();
+        sendBroadcastIntent.setAction("com.android.examples.braodcast");
+        sendBroadcastIntent.putExtra("MSG", s);
+        sendBroadcast(sendBroadcastIntent);
+    }
+
     protected View.OnClickListener timePickerDialog = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
